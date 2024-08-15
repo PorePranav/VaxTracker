@@ -45,9 +45,9 @@ const authConfig: NextAuthConfig = {
       return session;
     },
   },
-  // pages: {
-  //   signIn: '/login',
-  // },
+  pages: {
+    signIn: '/login',
+  },
 };
 
 export const {
