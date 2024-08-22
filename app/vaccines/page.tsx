@@ -20,9 +20,7 @@ export default async function Vaccines() {
         Empowering parents with essential vaccine information for their
         child&apos;s health and well-being
       </p>
-      <Suspense fallback={<Spinner />}>
-        <VaccineList vaccines={vaccines} />
-      </Suspense>
+      <VaccineList vaccines={vaccines} />
     </>
   );
 }
