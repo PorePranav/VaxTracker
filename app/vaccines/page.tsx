@@ -1,10 +1,7 @@
 import { Vaccine } from '@/types';
 
-import { Suspense } from 'react';
-
 import { getVaccines } from '../_lib/data-service';
 import VaccineList from '../_components/VaccineList';
-import Spinner from '../_components/Spinner';
 
 export const metadata = {
   title: 'Vaccines',

@@ -12,15 +12,15 @@ export default async function Navigation() {
     ];
   else if (session.user.role === 'parent')
     links = [
+      { href: '/', item: 'Dashboard' },
       { href: '/vaccines', item: 'Vaccines' },
       { href: '/children', item: 'Children' },
-      { href: '/immunizations', item: 'Immunizations' },
       { href: '/appointments', item: 'Appointments' },
     ];
   else if (session.user.role === 'hospital')
     links = [
+      { href: '/', item: 'Dashboard' },
       { href: '/children', item: 'Children' },
-      { href: '/appointments', item: 'Appointments' },
     ];
 
   return (
