@@ -1,17 +1,19 @@
 'use client';
-import { Child } from '@/types';
+import { Child, HospitalChildRegistration } from '@/types';
 import { useState } from 'react';
 import SearchBox from './SearchBox';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiChevronRight } from 'react-icons/hi2';
+import AddChild from '@/app/_components/AddChild';
 
 export default function ChildrenList({
   childrenList,
+  hospitalList,
 }: {
   childrenList: Child[] | undefined;
+  hospitalList: HospitalChildRegistration[] | undefined;
 }) {
-  console.log(childrenList);
   if (!childrenList) return;
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -28,28 +30,32 @@ export default function ChildrenList({
     <>
       <div className="flex justify-between">
         <SearchBox value={searchQuery} onChange={handleInputChange} />
-        <button className="px-4 font-semibold bg-primary-600 text-white rounded-lg">
-          Add New Child
-        </button>
+        <AddChild hospitalList={hospitalList} />
       </div>
       <div className="flex flex-col gap-4 mt-8">
         {filteredChildren.map((child: Child) => (
-          <Link href={`/children/${child.id}`} className="flex justify-between">
+          <Link
+            href={`/children/${child.id}`}
+            className="flex justify-between"
+            key={child.id}
+          >
             <div className="flex gap-4 items-center">
-              {child.photo_url && (
-                <Image
-                  src={child.photo_url}
-                  alt="Child photo"
-                  height={64}
-                  width={64}
-                />
-              )}
+              <Image
+                src={
+                  child.gender === 'male'
+                    ? '/boy-avatar.png'
+                    : '/girl-avatar.png'
+                }
+                alt="Child photo"
+                height={64}
+                width={64}
+              />
               <div>
                 <p className="text-lg font-semibold">{child.name}</p>
                 <p className="text-primary-300">{child.date_of_birth}</p>
               </div>
             </div>
-            <HiChevronRight size={28} />
+            <HiChevronRight className="self-center" size={28} />
           </Link>
         ))}
       </div>

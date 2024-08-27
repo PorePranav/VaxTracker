@@ -1,7 +1,16 @@
-import { Child, Immunization, UserDetails, Vaccine } from '@/types';
+import {
+  Child,
+  HospitalChildRegistration,
+  Immunization,
+  UserDetails,
+  Vaccine,
+} from '@/types';
 import { supabase } from './supabase';
-import { notFound } from 'next/navigation';
 import { auth } from './auth';
+import { Database } from '@/database.types';
+import { notFound } from 'next/navigation';
+
+type User = Database['public']['Tables']['users']['Row'];
 
 export async function getUser(email: string) {
   const { data } = await supabase
@@ -48,9 +57,25 @@ export async function getChildren(id: string): Promise<Child[] | undefined> {
   return data as Child[];
 }
 
-export async function getImmunizationsByUser(
-  id: string
-): Promise<Immunization[] | undefined> {
+export async function getHospitals(): Promise<
+  HospitalChildRegistration[] | undefined
+> {
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, name')
+    .eq('role', 'hospital');
+
+  if (error) {
+    console.log('Error fetching hospitals', error);
+    return undefined;
+  }
+
+  return data as HospitalChildRegistration[];
+}
+
+export async function getImmunizationsByUser(): Promise<
+  Immunization[] | undefined
+> {
   const session = await auth();
   if (!session) return;
 

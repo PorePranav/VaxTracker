@@ -25,18 +25,20 @@ export default function ChildrenCard({
   return (
     <>
       <SearchBox value={searchQuery} onChange={handleInputChange} />
-      <div className="grid grid-cols-2 gap-x-8 mt-8">
+      <div className="grid grid-cols-2 gap-8 mt-8">
         {filteredChildren.map((child: Child) => (
           <Link href={`/children/${child.id}`} key={child.id}>
             <div className="border border-primary-200 rounded-lg gap-2 grid p-4">
-              {child.photo_url && (
-                <Image
-                  src={child.photo_url}
-                  alt="Child photo"
-                  height={64}
-                  width={64}
-                />
-              )}
+              <Image
+                src={
+                  child.gender === 'male'
+                    ? '/boy-avatar.png'
+                    : '/girl-avatar.png'
+                }
+                alt="Child photo"
+                height={64}
+                width={64}
+              />
               <p className="text-lg">Name: {child.name}</p>
               <p className="text-lg">Birthdate: {child.date_of_birth}</p>
             </div>

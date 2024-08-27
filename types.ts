@@ -5,6 +5,11 @@ export interface UserDetails {
   location?: string;
 }
 
+export interface HospitalChildRegistration {
+  id: string;
+  name: string;
+}
+
 export interface Vaccine {
   administration_age: string | null;
   id: string;
@@ -17,11 +22,10 @@ export interface Vaccine {
 
 export interface Child {
   id?: string;
-  parent_id?: string | null;
-  name?: string;
+  parent_id: string;
+  name: string;
   date_of_birth: string;
-  gender?: string | null;
-  photo_url?: string | null;
+  gender: 'male' | 'female';
   hospital_id?: string | null;
 }
 
