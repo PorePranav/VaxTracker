@@ -10,9 +10,8 @@ export default function ChildrenCard({
 }: {
   childrenList: Child[] | undefined;
 }) {
-  if (!childrenList) return;
-
   const [searchQuery, setSearchQuery] = useState<string>('');
+  if (!childrenList) return;
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchQuery(event.target.value);

@@ -14,9 +14,8 @@ export default function ChildrenList({
   childrenList: Child[] | undefined;
   hospitalList: HospitalChildRegistration[] | undefined;
 }) {
-  if (!childrenList) return;
-
   const [searchQuery, setSearchQuery] = useState<string>('');
+  if (!childrenList) return;
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.target.value);

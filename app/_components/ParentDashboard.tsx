@@ -8,8 +8,7 @@ export default async function ParentDashboard() {
   let children;
   if (session?.user.userId) children = await getChildren(session?.user.userId);
   let immunizations;
-  if (session?.user.userId)
-    immunizations = await getImmunizationsByUser(session?.user.userId);
+  if (session?.user.userId) immunizations = await getImmunizationsByUser();
 
   return (
     <>

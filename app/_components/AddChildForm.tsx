@@ -2,14 +2,27 @@
 
 import { createChild } from '@/app/_lib/actions';
 import { HospitalChildRegistration } from '@/types';
+import { useTransition } from 'react';
 
 export default function AddChildForm({
   hospitalList,
 }: {
   hospitalList: HospitalChildRegistration[] | undefined;
 }) {
+  const [isPending, startTransition] = useTransition();
+
+  function handleAddChild(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    startTransition(() => {
+      createChild(formData);
+    });
+  }
+
   return (
-    <form action={createChild}>
+    <form onSubmit={handleAddChild}>
       <div className="flex flex-col gap-4">
         <div className="space-y-2">
           <label htmlFor="name">Name Of The Child</label>
@@ -58,7 +71,10 @@ export default function AddChildForm({
           </select>
         </div>
       </div>
-      <button className="bg-primary-600 hover:bg-primary-800 rounded-lg px-8 py-4 text-white font-semibold  transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300 mt-6">
+      <button
+        className="bg-primary-600 hover:bg-primary-800 rounded-lg px-8 py-4 text-white font-semibold  transition-all disabled:cursor-not-allowed disabled:bg-primary-900 disabled:text-gray-300 mt-6"
+        disabled={isPending}
+      >
         Add Child
       </button>
     </form>
