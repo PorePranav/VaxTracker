@@ -10,6 +10,11 @@ export interface HospitalChildRegistration {
   name: string;
 }
 
+export interface VaccineDueDate {
+  id: string;
+  administration_time_date: number | null;
+}
+
 export interface Vaccine {
   administration_age: string | null;
   id: string;
@@ -18,6 +23,7 @@ export interface Vaccine {
   name: string;
   side_effects: string | null;
   img_url: string;
+  administration_time_date: number;
 }
 
 export interface Child {
@@ -27,6 +33,14 @@ export interface Child {
   date_of_birth: string;
   gender: 'male' | 'female';
   hospital_id?: string | null;
+}
+
+export interface NewImmunization {
+  child_id: string;
+  vaccine_id: string;
+  status: ImmunizationStatus;
+  due_date: string;
+  date_given?: string | null;
 }
 
 export interface Immunization {
@@ -47,7 +61,7 @@ export interface Immunization {
   } | null;
 }
 
-enum ImmunizationStatus {
+export enum ImmunizationStatus {
   Upcoming = 'upcoming',
   Scheduled = 'scheduled',
   Completed = 'completed',

@@ -1,3 +1,4 @@
+'use client';
 import Modal from '@/app/_components/Modal';
 import AddChildForm from '@/app/_components/AddChildForm';
 import { HospitalChildRegistration } from '@/types';

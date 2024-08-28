@@ -27,11 +27,11 @@ export async function createUser(newUser: UserDetails) {
   if (error) throw new Error('User could not be created');
 }
 
-export async function getVaccines() {
+export async function getVaccines(): Promise<Vaccine[]> {
   const { data, error } = await supabase.from('vaccines').select('*');
 
   if (error) throw new Error('Could not fetch vaccines');
-  return data;
+  return data as Vaccine[];
 }
 
 export async function getVaccine(id: string): Promise<Vaccine> {
@@ -43,7 +43,7 @@ export async function getVaccine(id: string): Promise<Vaccine> {
 
   if (error) notFound();
 
-  return data;
+  return data as Vaccine;
 }
 
 export async function getChildren(id: string): Promise<Child[] | undefined> {

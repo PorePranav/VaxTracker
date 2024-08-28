@@ -5,7 +5,6 @@ import SearchBox from './SearchBox';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HiChevronRight } from 'react-icons/hi2';
-import AddChild from '@/app/_components/AddChild';
 
 export default function ChildrenList({
   childrenList,
@@ -29,7 +28,6 @@ export default function ChildrenList({
     <>
       <div className="flex justify-between">
         <SearchBox value={searchQuery} onChange={handleInputChange} />
-        <AddChild hospitalList={hospitalList} />
       </div>
       <div className="flex flex-col gap-4 mt-8">
         {filteredChildren.map((child: Child) => (

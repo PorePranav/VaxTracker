@@ -1,3 +1,4 @@
+import AddChild from '../_components/AddChild';
 import ChildrenList from '../_components/ChildrenList';
 import { auth } from '../_lib/auth';
 import { getChildren, getHospitals } from '../_lib/data-service';
@@ -12,6 +13,7 @@ export default async function ChildrenPage() {
   return (
     <>
       <h1 className="text-4xl font-semibold">Children&apos;s Profile</h1>
+      <AddChild hospitalList={hospitalList} />
       {childrenList && childrenList.length > 0 && (
         <ChildrenList childrenList={childrenList} hospitalList={hospitalList} />
       )}

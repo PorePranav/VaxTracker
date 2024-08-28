@@ -1,7 +1,12 @@
 'use server';
 import { auth, signIn } from '@/app/_lib/auth';
 import { supabase } from '@/app/_lib/supabase';
-import { Child } from '@/types';
+import {
+  Child,
+  NewImmunization,
+  ImmunizationStatus,
+  VaccineDueDate,
+} from '@/types';
 import { revalidatePath } from 'next/cache';
 
 export async function signInAction() {
@@ -9,7 +14,6 @@ export async function signInAction() {
 }
 
 export async function createChild(formData: FormData): Promise<void> {
-  console.log(formData);
   const session = await auth();
   if (!session) throw new Error('You must be logged in');
 
@@ -24,8 +28,45 @@ export async function createChild(formData: FormData): Promise<void> {
     parent_id: session.user.userId,
   };
 
-  const { error } = await supabase.from('children').insert([newChild]);
-  if (error) throw new Error('Child could not be created');
+  const { data: newChildId, error: childInsertError } = await supabase
+    .from('children')
+    .insert([newChild])
+    .select('id')
+    .single();
+  if (childInsertError || !newChildId)
+    throw new Error('Child could not be created');
+
+  const childId = newChildId.id;
+
+  const { data: vaccines, error: vaccineFetchError } = await supabase
+    .from('vaccines')
+    .select('id, administration_time_date');
+
+  if (vaccineFetchError || !vaccines)
+    throw new Error('Vaccines could not be fetched');
+
+  const immunizations: NewImmunization[] = vaccines.map(
+    (vaccine: VaccineDueDate) => {
+      const dueDate = new Date(newChild.date_of_birth);
+      dueDate.setDate(
+        dueDate.getDate() + (vaccine.administration_time_date as number)
+      );
+
+      return {
+        child_id: childId,
+        vaccine_id: vaccine.id,
+        status: ImmunizationStatus.Upcoming,
+        due_date: dueDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+      };
+    }
+  );
+
+  const { error: immunizationInsertError } = await supabase
+    .from('immunizations')
+    .insert(immunizations);
+
+  if (immunizationInsertError)
+    throw new Error('Immunizations could not be created');
 
   revalidatePath(`/children`);
 }

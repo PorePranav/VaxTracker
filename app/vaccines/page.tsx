@@ -7,6 +7,11 @@ export const metadata = {
   title: 'Vaccines',
 };
 
+export async function generateStaticParams() {
+  const vaccines: Vaccine[] = await getVaccines();
+  return vaccines.map((vaccine) => ({ vaccineId: String(vaccine.id) }));
+}
+
 export default async function Vaccines() {
   const vaccines: Vaccine[] = await getVaccines();
 
