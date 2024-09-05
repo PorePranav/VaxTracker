@@ -44,25 +44,28 @@ export interface NewImmunization {
 }
 
 export interface Immunization {
-  child_id: string | null;
-  created_at: string | null;
+  child_id: string;
+  created_at: string;
   date_given: string | null;
+  scheduled_date: string | null;
   due_date: string;
   id: string;
   status: ImmunizationStatus;
   child: {
     id: string;
     name: string;
-    photo_url: string | null;
+    hospital_id?: string | null;
+    hospital: { name: string };
   } | null;
   vaccine: {
     name: string;
     img_url: string;
-  } | null;
+  };
 }
 
 export enum ImmunizationStatus {
   Upcoming = 'upcoming',
   Scheduled = 'scheduled',
   Completed = 'completed',
+  OverDue = 'overdue',
 }

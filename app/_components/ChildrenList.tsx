@@ -8,10 +8,8 @@ import { HiChevronRight } from 'react-icons/hi2';
 
 export default function ChildrenList({
   childrenList,
-  hospitalList,
 }: {
   childrenList: Child[] | undefined;
-  hospitalList: HospitalChildRegistration[] | undefined;
 }) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   if (!childrenList) return;

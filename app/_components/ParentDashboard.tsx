@@ -1,5 +1,5 @@
 import { auth } from '../_lib/auth';
-import { getChildren, getImmunizationsByUser } from '../_lib/data-service';
+import { getChildren, getImmunizationsDashboard } from '../_lib/data-service';
 import ChildrenCard from './ChildrenCard';
 import ImmunizationCard from './ImmunizationCard';
 
@@ -8,7 +8,7 @@ export default async function ParentDashboard() {
   let children;
   if (session?.user.userId) children = await getChildren(session?.user.userId);
   let immunizations;
-  if (session?.user.userId) immunizations = await getImmunizationsByUser();
+  if (session?.user.userId) immunizations = await getImmunizationsDashboard();
 
   return (
     <>

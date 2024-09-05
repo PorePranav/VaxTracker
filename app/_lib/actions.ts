@@ -56,7 +56,7 @@ export async function createChild(formData: FormData): Promise<void> {
         child_id: childId,
         vaccine_id: vaccine.id,
         status: ImmunizationStatus.Upcoming,
-        due_date: dueDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+        due_date: dueDate.toISOString().split('T')[0],
       };
     }
   );

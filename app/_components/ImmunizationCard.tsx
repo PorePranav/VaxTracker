@@ -8,7 +8,7 @@ export default function ImmunizationCard({
   immunizationsList: Immunization[] | undefined;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-x-8 mt-2">
+    <div className="grid grid-cols-2 gap-8 mt-2">
       {immunizationsList?.map((immunization) => (
         <Link href={`/immunizations/${immunization.id}`} key={immunization.id}>
           <div className="border border-primary-200 rounded-lg gap-2 grid p-4">

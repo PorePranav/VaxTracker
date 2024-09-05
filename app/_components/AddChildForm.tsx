@@ -2,6 +2,7 @@
 
 import { createChild } from '@/app/_lib/actions';
 import { HospitalChildRegistration } from '@/types';
+import { User } from '@supabase/supabase-js';
 import { useTransition } from 'react';
 
 export default function AddChildForm({
@@ -58,11 +59,12 @@ export default function AddChildForm({
         <div className="space-y-2">
           <label htmlFor="hospitalId">Hospital</label>
           <select
-            name="hospitalId"
-            id="hospitalId"
+            name="hospital_id"
+            id="hospital_id"
             className="px-5 py-3 bg-primary-200 text-white w-full shadow-sm rounded-sm outline-none"
             required
           >
+            <option value={'Select'}>Select...</option>
             {hospitalList?.map((hospital) => (
               <option key={hospital.id} value={hospital.id}>
                 {hospital.name}
