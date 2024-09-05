@@ -15,7 +15,7 @@ export default async function ChildrenPage() {
       <h1 className="text-4xl font-semibold">Children&apos;s Profile</h1>
       <AddChild hospitalList={hospitalList} />
       {childrenList && childrenList.length > 0 && (
-        <ChildrenList childrenList={childrenList} hospitalList={hospitalList} />
+        <ChildrenList childrenList={childrenList} />
       )}
     </>
   );
