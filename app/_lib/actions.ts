@@ -6,6 +6,7 @@ import {
   NewImmunization,
   ImmunizationStatus,
   VaccineDueDate,
+  Appointment,
 } from '@/types';
 import { revalidatePath } from 'next/cache';
 
@@ -24,7 +25,7 @@ export async function createChild(formData: FormData): Promise<void> {
     name: formData.get('name') as string,
     date_of_birth: formData.get('date_of_birth') as string,
     gender,
-    hospital_id: formData.get('hospital_id') as string | null,
+    hospital_id: formData.get('hospital_id') as string,
     parent_id: session.user.userId,
   };
 
@@ -69,4 +70,53 @@ export async function createChild(formData: FormData): Promise<void> {
     throw new Error('Immunizations could not be created');
 
   revalidatePath(`/children`);
+}
+
+export async function updateChild(
+  childId: string,
+  formData: FormData
+): Promise<void> {
+  const session = await auth();
+  if (!session) throw new Error('You must be logged in');
+
+  const { data: child, error: childFetchError } = await supabase
+    .from('children')
+    .select('*')
+    .eq('id', childId)
+    .single();
+  if (childFetchError || !child) throw new Error('Child could not be fetched');
+  if (child.parent_id !== session.user.userId)
+    throw new Error('You do not have permission to update this child');
+
+  const childData = Object.fromEntries(formData.entries());
+
+  const { error } = await supabase
+    .from('children')
+    .update(childData)
+    .eq('id', childId);
+  if (error) throw new Error('There was an error updating the information');
+
+  revalidatePath(`/children/${childId}`);
+}
+
+export async function scheduleAppointment(
+  appointmentData: Appointment
+): Promise<void> {
+  const { error: appointmentError } = await supabase
+    .from('appointments')
+    .insert([appointmentData])
+    .select('*');
+
+  const { error: immunizationError } = await supabase
+    .from('immunizations')
+    .update({
+      status: ImmunizationStatus.Scheduled,
+      scheduled_date: appointmentData.scheduled_date,
+    })
+    .eq('id', appointmentData.immunization_id);
+
+  if (appointmentError || immunizationError)
+    throw new Error('There was an error scheduling the appointment');
+
+  revalidatePath(`/immunizations/${appointmentData.immunization_id}`);
 }

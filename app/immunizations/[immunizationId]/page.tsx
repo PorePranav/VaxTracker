@@ -1,5 +1,6 @@
 import ChildProfileCard from '@/app/_components/ChildProfileCard';
-import { getImmunizationById } from '@/app/_lib/data-service';
+import ScheduleAppointment from '@/app/_components/ScheduleAppointment';
+import { getChild, getImmunizationById } from '@/app/_lib/data-service';
 import { ImmunizationStatus } from '@/types';
 import { differenceInDays } from 'date-fns';
 import { NextPage } from 'next';
@@ -15,18 +16,23 @@ const ImmunizationsPage: NextPage<ImmunizationPageProps> = async function ({
   params,
 }) {
   const immunization = await getImmunizationById(params.immunizationId);
+  const childData = await getChild(immunization.child_id);
   const today = new Date();
   const dueDate = new Date(immunization.due_date);
 
-  if (immunization.status !== 'completed' && today > dueDate) {
+  if (immunization.status == 'upcoming' && today > dueDate) {
     immunization.status = ImmunizationStatus.OverDue;
   }
-  const date =
-    immunization.status === 'upcoming' || immunization.status === 'overdue'
-      ? immunization.due_date
-      : immunization.status === 'scheduled'
-      ? immunization.scheduled_date
-      : immunization.date_given;
+
+  let date;
+
+  if (immunization.status === 'upcoming' || immunization.status === 'overdue') {
+    date = immunization.due_date;
+  } else if (immunization.status === 'scheduled') {
+    date = immunization.scheduled_date;
+  } else {
+    date = immunization.date_given;
+  }
 
   const details = [
     {
@@ -79,9 +85,10 @@ const ImmunizationsPage: NextPage<ImmunizationPageProps> = async function ({
           (immunization.status === 'overdue' &&
             differenceInDays(new Date(immunization.due_date), new Date()) <
               7 && (
-              <button className="w-full bg-primary-600 text-white font-semibold text-xl mt-4 rounded-lg py-2">
-                Schedule Appointment
-              </button>
+              <ScheduleAppointment
+                immunization={immunization}
+                childData={childData}
+              />
             ))}
       </div>
     </>

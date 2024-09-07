@@ -32,7 +32,7 @@ export interface Child {
   name: string;
   date_of_birth: string;
   gender: 'male' | 'female';
-  hospital_id?: string | null;
+  hospital_id: string;
 }
 
 export interface NewImmunization {
@@ -41,6 +41,13 @@ export interface NewImmunization {
   status: ImmunizationStatus;
   due_date: string;
   date_given?: string | null;
+}
+
+export interface Appointment {
+  child_id: string;
+  hospital_id: string;
+  immunization_id: string;
+  scheduled_date: string;
 }
 
 export interface Immunization {

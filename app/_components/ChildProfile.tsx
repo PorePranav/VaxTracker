@@ -1,11 +1,15 @@
-import { Child, Immunization } from '@/types';
+import { Child, HospitalChildRegistration, Immunization } from '@/types';
 import React from 'react';
-import { getChild, getImmunizationsByChildId } from '../_lib/data-service';
+import {
+  getChild,
+  getHospitals,
+  getImmunizationsByChildId,
+} from '../_lib/data-service';
 import Image from 'next/image';
-import { differenceInYears } from 'date-fns';
 import Link from 'next/link';
 import { HiChevronRight } from 'react-icons/hi2';
 import ChildProfileCard from './ChildProfileCard';
+import EditChild from '@/app/_components/EditChild';
 
 interface ChildProfileProps {
   childId: string;
@@ -16,6 +20,8 @@ const ChildProfile: React.FC<ChildProfileProps> = async function ({ childId }) {
   const immunizations: Immunization[] = await getImmunizationsByChildId(
     childId
   );
+  const hospitalList: HospitalChildRegistration[] | undefined =
+    await getHospitals();
 
   return (
     <>
@@ -36,6 +42,8 @@ const ChildProfile: React.FC<ChildProfileProps> = async function ({ childId }) {
               {childData.date_of_birth}
             </p>
           </div>
+          {/* Add Edit Child Here */}
+          <EditChild hospitalList={hospitalList} childData={childData} />
         </div>
       </div>
       <div className="mt-6">
