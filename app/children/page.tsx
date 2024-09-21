@@ -14,8 +14,13 @@ export default async function ChildrenPage() {
     <>
       <h1 className="text-4xl font-semibold">Children&apos;s Profile</h1>
       <AddChild hospitalList={hospitalList} />
-      {childrenList && childrenList.length > 0 && (
+      {childrenList && childrenList.length > 0 ? (
         <ChildrenList childrenList={childrenList} />
+      ) : (
+        <p className="mt-4 text-xl">
+          You have not added any children yet, start by clicking on the above
+          button!
+        </p>
       )}
     </>
   );

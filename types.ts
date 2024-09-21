@@ -3,6 +3,7 @@ export interface UserDetails {
   email: string;
   role?: string;
   location?: string;
+  is_profile_complete?: boolean;
 }
 
 export interface HospitalChildRegistration {
