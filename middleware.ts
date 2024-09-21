@@ -7,7 +7,7 @@ import { supabase } from '@/app/_lib/supabase';
 export async function middleware(request: NextRequest) {
   const session = await auth();
 
-  const authRequiredPaths = ['/children', '/immunizations', '/appointments'];
+  const authRequiredPaths = ['/children', '/immunizations', '/profile'];
   const requiresAuth = authRequiredPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );

@@ -1,5 +1,5 @@
 'use server';
-import { auth, signIn } from '@/app/_lib/auth';
+import { auth, signIn, signOut } from '@/app/_lib/auth';
 import { supabase } from '@/app/_lib/supabase';
 import {
   Child,
@@ -119,4 +119,8 @@ export async function scheduleAppointment(
     throw new Error('There was an error scheduling the appointment');
 
   revalidatePath(`/immunizations/${appointmentData.immunization_id}`);
+}
+
+export async function signOutAction() {
+  await signOut({ redirectTo: '/' });
 }
