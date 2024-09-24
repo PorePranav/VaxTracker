@@ -8,7 +8,9 @@ import {
   VaccineDueDate,
   Appointment,
 } from '@/types';
+import { profile } from 'console';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function signInAction() {
   await signIn('google', { redirectTo: '/' });
@@ -119,6 +121,27 @@ export async function scheduleAppointment(
     throw new Error('There was an error scheduling the appointment');
 
   revalidatePath(`/immunizations/${appointmentData.immunization_id}`);
+}
+
+export async function updateProfile(formData: FormData): Promise<void> {
+  const session = await auth();
+  if (!session) throw new Error('You must be logged in');
+
+  const { name, role } = Object.fromEntries(formData.entries());
+
+  const { error } = await supabase
+    .from('users')
+    .update({
+      name: name as string,
+      role: role as string,
+      is_profile_complete: true,
+    })
+    .eq('id', session.user.userId);
+
+  if (error) throw new Error('There was an error updating the information');
+
+  revalidatePath(`/profile`);
+  redirect(`/`);
 }
 
 export async function signOutAction() {

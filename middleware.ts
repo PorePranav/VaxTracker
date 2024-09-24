@@ -28,6 +28,12 @@ export async function middleware(request: NextRequest) {
         .single();
 
       if (
+        profile?.is_profile_complete &&
+        request.nextUrl.pathname.startsWith('/completeProfile')
+      )
+        return NextResponse.redirect(new URL('/', request.url));
+
+      if (
         !profile?.is_profile_complete &&
         !request.nextUrl.pathname.startsWith('/completeProfile')
       ) {

@@ -1,4 +1,5 @@
 import {
+  Appointment,
   Child,
   HospitalChildRegistration,
   Immunization,
@@ -42,11 +43,27 @@ export async function getVaccine(id: string): Promise<Vaccine> {
   return data as Vaccine;
 }
 
-export async function getChildren(id: string): Promise<Child[] | undefined> {
+export async function getChildrenParent(): Promise<Child[] | undefined> {
+  const session = await auth();
+  if (!session) return;
+
   const { data, error } = await supabase
     .from('children')
     .select('*')
-    .eq('parent_id', id);
+    .eq('parent_id', session.user.userId);
+
+  if (error) throw new Error('There was an error fetching data');
+  return data as Child[];
+}
+
+export async function getChildrenHospital(): Promise<Child[] | undefined> {
+  const session = await auth();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('children')
+    .select('*')
+    .eq('hospital_id', session.user.userId);
 
   if (error) throw new Error('There was an error fetching data');
   return data as Child[];
@@ -152,7 +169,7 @@ export async function getImmunizationsDashboard(): Promise<
       scheduled_date,
       status,
       child_id,
-      child:children(id, name, photo_url),
+      child:children(id, name),
       vaccine_id,
       vaccine:vaccines(name, img_url)
       `
@@ -164,4 +181,28 @@ export async function getImmunizationsDashboard(): Promise<
   if (immunizationError) return;
 
   return immunizationsData as Immunization[];
+}
+
+export async function getScheduledAppointmentsHospital(): Promise<
+  Appointment[] | undefined
+> {
+  const session = await auth();
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from('appointments')
+    .select(
+      `child_id, 
+      child:children(id, name, gender),
+      hospital_id,
+      immunization_id,
+      scheduled_date
+      `
+    )
+    .eq('hospital_id', session.user.userId)
+    .order('scheduled_date', { ascending: true });
+
+  if (error) return;
+
+  return data as Appointment[];
 }

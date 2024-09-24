@@ -2,7 +2,6 @@
 
 import { createChild } from '@/app/_lib/actions';
 import { HospitalChildRegistration } from '@/types';
-import { User } from '@supabase/supabase-js';
 import { useTransition } from 'react';
 
 export default function AddChildForm({

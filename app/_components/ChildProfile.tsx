@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { HiChevronRight } from 'react-icons/hi2';
 import ChildProfileCard from './ChildProfileCard';
 import EditChild from '@/app/_components/EditChild';
+import { auth } from '../_lib/auth';
 
 interface ChildProfileProps {
   childId: string;
@@ -22,6 +23,8 @@ const ChildProfile: React.FC<ChildProfileProps> = async function ({ childId }) {
   );
   const hospitalList: HospitalChildRegistration[] | undefined =
     await getHospitals();
+  const session = await auth();
+  if (!session) return;
 
   return (
     <>
@@ -42,8 +45,9 @@ const ChildProfile: React.FC<ChildProfileProps> = async function ({ childId }) {
               {childData.date_of_birth}
             </p>
           </div>
-          {/* Add Edit Child Here */}
-          <EditChild hospitalList={hospitalList} childData={childData} />
+          {session.user.role === 'parent' && (
+            <EditChild hospitalList={hospitalList} childData={childData} />
+          )}
         </div>
       </div>
       <div className="mt-6">

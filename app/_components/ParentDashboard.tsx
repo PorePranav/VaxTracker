@@ -1,6 +1,6 @@
-import { auth } from '../_lib/auth';
+import { auth } from '@/app/_lib/auth';
 import {
-  getChildren,
+  getChildrenParent,
   getHospitals,
   getImmunizationsDashboard,
 } from '../_lib/data-service';
@@ -11,7 +11,8 @@ import ImmunizationCard from './ImmunizationCard';
 export default async function ParentDashboard() {
   const session = await auth();
   let children;
-  if (session?.user.userId) children = await getChildren(session?.user.userId);
+  if (session?.user.userId)
+    children = await getChildrenParent(session?.user.userId);
   let immunizations;
   if (session?.user.userId) immunizations = await getImmunizationsDashboard();
 
