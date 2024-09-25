@@ -72,6 +72,13 @@ export interface Immunization {
   };
 }
 
+export interface AppointmentCounts {
+  childrenCount: number;
+  todayAppointments: number;
+  overdueAppointments: number;
+  upcomingAppointments: number;
+}
+
 export enum ImmunizationStatus {
   Upcoming = 'upcoming',
   Scheduled = 'scheduled',
