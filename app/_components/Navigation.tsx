@@ -37,14 +37,16 @@ export default async function Navigation() {
               </Link>
             </li>
           ))}
+          <li>
+            {session && (
+              <form action={signOutAction}>
+                <button className="hover:text-primary-700 transition-colors">
+                  Logout
+                </button>
+              </form>
+            )}
+          </li>
         </ul>
-        {session && (
-          <form action={signOutAction} className="ml-8">
-            <button className="hover:text-white px-4 py-2 rounded-md transition-colors hover:bg-primary-700">
-              Logout
-            </button>
-          </form>
-        )}
       </div>
     </nav>
   );

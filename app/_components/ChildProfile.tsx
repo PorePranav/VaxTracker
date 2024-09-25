@@ -11,6 +11,7 @@ import { HiChevronRight } from 'react-icons/hi2';
 import ChildProfileCard from './ChildProfileCard';
 import EditChild from '@/app/_components/EditChild';
 import { auth } from '../_lib/auth';
+import GenerateReport from './GenerateReport';
 
 interface ChildProfileProps {
   childId: string;
@@ -45,9 +46,12 @@ const ChildProfile: React.FC<ChildProfileProps> = async function ({ childId }) {
               {childData.date_of_birth}
             </p>
           </div>
-          {session.user.role === 'parent' && (
-            <EditChild hospitalList={hospitalList} childData={childData} />
-          )}
+          <div className="flex mt-4 gap-4">
+            {session.user.role === 'parent' && (
+              <EditChild hospitalList={hospitalList} childData={childData} />
+            )}
+            <GenerateReport childId={childData.id} />
+          </div>
         </div>
       </div>
       <div className="mt-6">

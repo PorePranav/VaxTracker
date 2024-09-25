@@ -11,8 +11,7 @@ import ImmunizationCard from './ImmunizationCard';
 export default async function ParentDashboard() {
   const session = await auth();
   let children;
-  if (session?.user.userId)
-    children = await getChildrenParent(session?.user.userId);
+  if (session?.user.userId) children = await getChildrenParent();
   let immunizations;
   if (session?.user.userId) immunizations = await getImmunizationsDashboard();
 

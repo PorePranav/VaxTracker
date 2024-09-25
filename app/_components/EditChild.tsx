@@ -13,7 +13,7 @@ export default function EditChild({
   return (
     <Modal>
       <Modal.Open opens="child-form">
-        <button className="py-2 px-4 bg-primary-600 text-white font-semibold rounded-md mt-4">
+        <button className="py-2 px-4 bg-primary-600 text-white font-semibold rounded-md w-full">
           Edit Details
         </button>
       </Modal.Open>

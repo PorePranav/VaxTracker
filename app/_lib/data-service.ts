@@ -11,6 +11,180 @@ import { supabase } from './supabase';
 import { auth } from './auth';
 import { notFound } from 'next/navigation';
 
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+
+export async function generateImmunizationPDF(
+  childId: string
+): Promise<Uint8Array> {
+  const pdfDoc = await PDFDocument.create();
+  let page = pdfDoc.addPage([600, 800]);
+  const records = await getImmunizationsByChildId(childId);
+  const child = await getChild(childId);
+
+  const mainColor = rgb(0.518, 0.239, 0.961);
+  const blackColor = rgb(0, 0, 0);
+  const grayColor = rgb(0.4, 0.4, 0.4);
+  const whiteColor = rgb(1, 1, 1);
+
+  const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  let yOffset = 750;
+  const fontSize = 12;
+  const headerFontSize = 28;
+  const subHeaderFontSize = 16;
+  const lineHeight = 20;
+
+  page.drawRectangle({
+    x: 0,
+    y: yOffset - 50,
+    width: 600,
+    height: 60,
+    color: mainColor,
+  });
+
+  page.drawText(`VaxTracker`, {
+    x: 50,
+    y: yOffset - 25,
+    size: headerFontSize,
+    font: boldFont,
+    color: whiteColor,
+  });
+
+  yOffset -= 100;
+
+  page.drawText(`Immunization Records Report`, {
+    x: 50,
+    y: yOffset,
+    size: subHeaderFontSize,
+    font: boldFont,
+    color: mainColor,
+  });
+
+  yOffset -= 30;
+
+  page.drawText(`Child: ${child.name}`, {
+    x: 50,
+    y: yOffset,
+    size: fontSize,
+    font: boldFont,
+    color: blackColor,
+  });
+  yOffset -= lineHeight;
+  page.drawText(`Date of Birth: ${child.date_of_birth}`, {
+    x: 50,
+    y: yOffset,
+    size: fontSize,
+    font: regularFont,
+    color: blackColor,
+  });
+  yOffset -= lineHeight * 2;
+
+  const columns = [
+    { header: 'Vaccine', x: 50, width: 250 },
+    { header: 'Due Date', x: 300, width: 150 },
+    { header: 'Date Given', x: 450, width: 100 },
+  ];
+
+  columns.forEach((col) => {
+    page.drawText(col.header, {
+      x: col.x,
+      y: yOffset,
+      size: fontSize,
+      font: boldFont,
+      color: mainColor,
+    });
+  });
+
+  yOffset -= lineHeight * 1.5;
+
+  page.drawLine({
+    start: { x: 40, y: yOffset + 5 },
+    end: { x: 560, y: yOffset + 5 },
+    thickness: 1,
+    color: grayColor,
+  });
+
+  yOffset -= 10;
+
+  records.forEach((record: Immunization) => {
+    if (yOffset < 50) {
+      page = pdfDoc.addPage([600, 800]);
+      yOffset = 750;
+    }
+
+    const vaccineNameLines = splitTextIntoLines(record.vaccine.name, 30);
+    vaccineNameLines.forEach((line, index) => {
+      page.drawText(line, {
+        x: columns[0].x,
+        y: yOffset - index * (fontSize + 2),
+        size: fontSize,
+        font: regularFont,
+        color: blackColor,
+      });
+    });
+
+    page.drawText(record.due_date || 'N/A', {
+      x: columns[1].x,
+      y: yOffset,
+      size: fontSize,
+      font: regularFont,
+      color: blackColor,
+    });
+    page.drawText(record.date_given || '-', {
+      x: columns[2].x,
+      y: yOffset,
+      size: fontSize,
+      font: regularFont,
+      color: blackColor,
+    });
+
+    yOffset -= Math.max(lineHeight, vaccineNameLines.length * (fontSize + 2));
+
+    page.drawLine({
+      start: { x: 40, y: yOffset + 5 },
+      end: { x: 560, y: yOffset + 5 },
+      thickness: 0.5,
+      color: grayColor,
+    });
+
+    yOffset -= 10;
+  });
+
+  const pageCount = pdfDoc.getPageCount();
+  for (let i = 0; i < pageCount; i++) {
+    const page = pdfDoc.getPage(i);
+    page.drawText(`Page ${i + 1} of ${pageCount}`, {
+      x: 50,
+      y: 30,
+      size: 10,
+      font: regularFont,
+      color: grayColor,
+    });
+  }
+
+  return await pdfDoc.save();
+}
+
+function splitTextIntoLines(text: string, maxChars: number): string[] {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    if (currentLine.length + word.length + 1 <= maxChars) {
+      currentLine += (currentLine ? ' ' : '') + word;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+  return lines;
+}
+
 export async function getUser(email: string) {
   const { data } = await supabase
     .from('users')
@@ -141,7 +315,7 @@ export async function getImmunizationsDashboard(): Promise<
 
   if (childrenError || !childrenData?.length) return;
 
-  const childIds = childrenData.map((child) => child.id);
+  const childIds = childrenData.map((child: { id: string }) => child.id);
   const { data: immunizationsData, error: immunizationError } = await supabase
     .from('immunizations')
     .select(
@@ -214,7 +388,7 @@ export async function getStatistics(
             .from('children')
             .select('id')
             .eq('hospital_id', hospitalId)
-        ).data?.map((child) => child.id) || []
+        ).data?.map((child: { id: string }) => child.id) || []
       ),
     supabase
       .from('appointments')
