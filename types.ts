@@ -46,7 +46,7 @@ export interface NewImmunization {
 
 export interface Appointment {
   child_id: string;
-  child: Child | null;
+  child?: Child | null;
   hospital_id: string;
   immunization_id: string;
   scheduled_date: string;

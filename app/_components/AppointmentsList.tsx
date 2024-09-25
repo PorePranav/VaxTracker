@@ -3,7 +3,6 @@ import { getScheduledAppointmentsHospital } from '@/app/_lib/data-service';
 
 export default async function AppointmentsList() {
   const appointments = await getScheduledAppointmentsHospital();
-  console.log(appointments);
 
   return (
     <div className="grid gap-4">
